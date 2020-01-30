@@ -2,3 +2,6 @@ numpy
 pandas
 tweepy
 textblob
+sklearn
+keras
+nltk

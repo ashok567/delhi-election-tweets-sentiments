@@ -2,7 +2,7 @@ from config import create_api
 import tweepy
 from textblob import TextBlob
 import re
-# import pandas as pd
+import pandas as pd
 
 
 class TweetStreamListner(tweepy.StreamListener):
@@ -26,18 +26,20 @@ class TweetStreamListner(tweepy.StreamListener):
 
 
 def main():
+    # Get twitter data
     api = create_api()
-    # search = 'CAA -filter:retweets'
-    # searched_tweet = tweepy.Cursor(api.search, q=search).items(100)
-    # tweets_data = [[tweet.user.name, tweet.text] for tweet in searched_tweet]
-    # df = pd.DataFrame(tweets_data, columns=['user', 'tweet'])
-    # df = df.drop_duplicates('tweet')
+    search = 'CAA -filter:retweets'
+    searched_tweet = tweepy.Cursor(api.search, q=search).items(500)
+    tweets_data = [[tweet.user.name, tweet.text]
+                   for tweet in searched_tweet]
+    df = pd.DataFrame(tweets_data, columns=['user', 'tweet'])
+    df = df.drop_duplicates('tweet')
+    df.to_csv('../data/data.csv', index=False)
 
     # tweet_listner = TweetStreamListner(api)
     # stream = tweepy.Stream(api.auth, tweet_listner)
     # # stream.userstream('BJP','CONGRESS')
     # stream.filter(track=['NRC'], languages=['en'])
-    print(api.me())
 
 
 if __name__ == "__main__":
