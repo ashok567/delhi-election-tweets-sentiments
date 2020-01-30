@@ -74,14 +74,6 @@ def vectorization(df):
     return freq_df
 
 
-# Tokenization for analysis
-def tokenization_tweets(dataset, features):
-    tokenization = TfidfVectorizer(max_features=features)
-    tokenization.fit(dataset)
-    dataset_transformed = tokenization.transform(dataset).toarray()
-    return dataset_transformed
-
-
 def main():
     df = pd.read_csv('../data/data.csv')
     df = preprocess(df)
