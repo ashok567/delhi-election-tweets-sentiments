@@ -75,7 +75,7 @@ def vectorization(df):
 
 
 def main():
-    df = pd.read_csv('../data/data.csv')
+    df = pd.read_csv('data.csv')
     df = preprocess(df)
 
 

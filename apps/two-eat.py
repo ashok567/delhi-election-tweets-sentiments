@@ -34,7 +34,7 @@ def main():
                    for tweet in searched_tweet]
     df = pd.DataFrame(tweets_data, columns=['user', 'tweet'])
     df = df.drop_duplicates('tweet')
-    df.to_csv('../data/data.csv', index=False)
+    df.to_csv('data.csv', index=False)
 
     # tweet_listner = TweetStreamListner(api)
     # stream = tweepy.Stream(api.auth, tweet_listner)
