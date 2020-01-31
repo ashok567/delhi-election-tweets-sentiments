@@ -1,13 +1,7 @@
-import pandas as pd
-import numpy as np
 import re
 # import nltk
 from nltk.corpus import wordnet, stopwords
 from nltk.tokenize import word_tokenize
-# import sklearn
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-# from sklearn.model_selection import train_test_split
-# from sklearn.preprocessing import Normalizer
 
 
 def handle_negation(row):
@@ -40,7 +34,7 @@ def detect_elongated_words(row):
     return row
 
 
-def preprocess(df):
+def clean_data(df):
     # Replace links, @UserNames, blank spaces, etc.
     df['tweet'] = df['tweet'].str.lower().replace('rt', '')
     df['user'] = df['user'].str.lower().replace(r'[^0-9A-Za-z \t]', '', regex=True)
@@ -63,21 +57,6 @@ def preprocess(df):
     return df
 
 
-def vectorization(df):
-    vector = CountVectorizer()
-    freq_matrix = vector.fit_transform(df['tweet'])
-    sum_freq = np.sum(freq_matrix, axis=0)
-    frequency = np.squeeze(np.asarray(sum_freq))
-    # print(vector.get_feature_names())
-    # print(frequency)
-    freq_df = pd.DataFrame([frequency], columns=vector.get_feature_names()).T
-    return freq_df
-
-
-def main():
-    df = pd.read_csv('data.csv')
-    df = preprocess(df)
-
-
-if __name__ == "__main__":
-    main()
+def preprocess_data(df):
+    df = clean_data(df)
+    return df
