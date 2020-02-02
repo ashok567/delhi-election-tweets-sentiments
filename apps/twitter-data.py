@@ -25,16 +25,16 @@ class TweetStreamListner(tweepy.StreamListener):
 
 def get_sentiment(tweet):
     analysis = TextBlob(tweet)
-    if analysis.sentiment.sentiment > 0:
+    if analysis.sentiment.polarity > 0:
         return 'Positive'
-    elif analysis.sentiment.sentiment < 0:
+    elif analysis.sentiment.polarity < 0:
         return 'Negative'
     else:
         return 'Netural'
 
 
 def save_data(api):
-    search = 'CAA -filter:retweets'
+    search = 'NRC -filter:retweets'
     searched_tweet = tweepy.Cursor(api.search, q=search).items(500)
     tweets_data = [[tweet.user.name, tweet.text]
                    for tweet in searched_tweet]
@@ -42,6 +42,8 @@ def save_data(api):
     df = df.drop_duplicates('tweet')
     processed_df = preprocess_data(df)
     processed_df['sentiment'] = processed_df['tweet'].apply(get_sentiment)
+    processed_df = processed_df.drop_duplicates('tweet')
+    processed_df = processed_df.dropna()
     processed_df.to_csv('data.csv', index=False)
 
 

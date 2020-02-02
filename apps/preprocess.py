@@ -37,7 +37,7 @@ def detect_elongated_words(row):
 def clean_data(df):
     # Replace links, @UserNames, blank spaces, etc.
     df['tweet'] = df['tweet'].str.lower().replace('rt', '')
-    df['user'] = df['user'].str.lower().replace(r'[^0-9A-Za-z \t]', '', regex=True)
+    # df['user'] = df['user'].str.lower().replace(r'[^0-9A-Za-z \t]', '', regex=True)
     df['tweet'] = df['tweet'].str.lower().replace(r'[^0-9A-Za-z \t]', '', regex=True)
     df['tweet'] = df['tweet'].str.replace(r'@\w+', '', regex=True)
     df['tweet'] = df['tweet'].str.replace(r'http\S+', '', regex=True)
