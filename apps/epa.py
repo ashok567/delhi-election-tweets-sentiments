@@ -1,14 +1,15 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 # import sklearn
 from sklearn.feature_extraction.text import CountVectorizer
 # from sklearn.feature_extraction.text import TfidfVectorizer
-# from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_combined_df_split
 # from sklearn.preprocessing import Normalizer
 
 
-def plot_graph(word_frequency):
+def plot_bar(word_frequency):
     plt.figure(figsize=(10,5))
     plt.bar(np.arange(50), word_frequency['count'][1:51], width = 0.8)
     plt.xticks(np.arange(50), word_frequency['count'][1:51].index, rotation=90)
@@ -17,6 +18,15 @@ def plot_graph(word_frequency):
     plt.title('Word Frequency related to the subject')
     plt.show()
 
+def plot_graph(df):
+    plt.figure(figsize=(6,6))
+    pts = plt.scatter(df['positive_count'], df['negative_count'], c=df["positive_count"], cmap="bwr")
+    plt.colorbar(pts)
+    # sns.regplot(x='positive_count', y='negative_count', data=df, scatter=False, fit_reg=False)
+    plt.xlabel('Positive Word Frequency')
+    plt.ylabel('Negative Word Frequency')
+    plt.title("Word frequency in Positive vs. Negative Tweets")
+    plt.show()
 
 def vectorization(df):
     vector = CountVectorizer()
@@ -34,7 +44,13 @@ def main():
     df = pd.read_csv('data.csv')
     df = df.dropna()
     word_frequency = vectorization(df).sort_values('count', ascending=False)
-    plot_graph(word_frequency)
+    word_frequency_pos = vectorization(df[df['sentiment']=='Positive']).sort_values('count', ascending=False)
+    word_frequency_neg = vectorization(df[df['sentiment']=='Negative']).sort_values('count', ascending=False)
+    plot_bar(word_frequency)
+    combined_df = pd.concat([word_frequency_pos, word_frequency_neg], axis=1, sort=False)
+    combined_df = combined_df.fillna(0)
+    combined_df.columns = ['positive_count', 'negative_count']
+    plot_graph(combined_df)
 
 
 if __name__ == "__main__":
