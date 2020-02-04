@@ -1,5 +1,8 @@
 numpy
 pandas
+matplotlib
+seaborn
+wordcloud
 tweepy
 textblob
 sklearn
