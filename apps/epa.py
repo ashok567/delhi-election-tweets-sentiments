@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from preprocess import preprocess_data
 import matplotlib.pyplot as plt
 # import seaborn as sns
 from PIL import Image
@@ -38,14 +39,16 @@ def plot_graph(df):
 def word_cloud(wc_text):
     file = os.getcwd()
     mask = np.array(Image.open(os.path.join(file, "delhi.jpg")))
-    wc = WordCloud(max_words=100, mask=mask, background_color='white',
+    wc = WordCloud(max_words=100, mask=mask, background_color='black',
                    contour_width=1, contour_color="black",
-                   colormap="nipy_spectral", stopwords=['nrc'],
+                   colormap="nipy_spectral",
+                   stopwords=['delhi'],
                    width=2000, height=1000, max_font_size=100)
     wc.generate(wc_text)
     plt.figure(figsize=(10, 10))
     plt.imshow(wc, interpolation="hermite")
     plt.axis('off')
+    plt.savefig('wc.png')
     plt.show()
 
 
@@ -64,6 +67,7 @@ def vectorization(df):
 def main():
     df = pd.read_csv('data.csv')
     df = df.dropna()
+    df = preprocess_data(df)
     word_frequency = vectorization(df).sort_values('count', ascending=False)
     word_frequency_pos = vectorization(df[df['sentiment'] == 'Positive']).sort_values('count', ascending=False)
     word_frequency_neg = vectorization(df[df['sentiment'] == 'Negative']).sort_values('count', ascending=False)
@@ -74,6 +78,7 @@ def main():
     plot_graph(combined_df)
     wc_text = df['tweet'].to_string(index=False)
     word_cloud(wc_text)
+    df.to_csv('data.csv', index=False)
 
 
 if __name__ == "__main__":
