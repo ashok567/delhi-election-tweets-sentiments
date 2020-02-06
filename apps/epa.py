@@ -1,16 +1,11 @@
 import pandas as pd
 import numpy as np
-from preprocess import preprocess_data
 import matplotlib.pyplot as plt
 # import seaborn as sns
 from PIL import Image
 from wordcloud import WordCloud
 import os
-# import sklearn
 from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from sklearn.model_selection import train_combined_df_split
-# from sklearn.preprocessing import Normalizer
 
 
 def plot_bar(word_frequency):
@@ -67,18 +62,18 @@ def vectorization(df):
 def main():
     df = pd.read_csv('data.csv')
     df = df.dropna()
-    df = preprocess_data(df)
     word_frequency = vectorization(df).sort_values('count', ascending=False)
-    word_frequency_pos = vectorization(df[df['sentiment'] == 'Positive']).sort_values('count', ascending=False)
-    word_frequency_neg = vectorization(df[df['sentiment'] == 'Negative']).sort_values('count', ascending=False)
+    pos_freq = vectorization(df[df['sentiment'] == 'Positive']).sort_values(
+                            'count', ascending=False)
+    neg_freq = vectorization(df[df['sentiment'] == 'Negative']).sort_values(
+                            'count', ascending=False)
     plot_bar(word_frequency)
-    combined_df = pd.concat([word_frequency_pos, word_frequency_neg], axis=1, sort=False)
+    combined_df = pd.concat([pos_freq, neg_freq], axis=1, sort=False)
     combined_df = combined_df.fillna(0)
     combined_df.columns = ['positive_count', 'negative_count']
     plot_graph(combined_df)
     wc_text = df['tweet'].to_string(index=False)
     word_cloud(wc_text)
-    df.to_csv('data.csv', index=False)
 
 
 if __name__ == "__main__":

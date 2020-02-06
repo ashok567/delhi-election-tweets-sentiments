@@ -1,16 +1,36 @@
 import re
-# import nltk
+import nltk
 from nltk.corpus import wordnet, stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
+
+
+def replace_antonyms(word):
+    for syn in wordnet.synsets(word):
+        for lemma in syn.lemmas():
+            if lemma.antonyms():
+                return lemma.antonyms()[0].name()
+    return word
 
 
 def handle_negation(row):
     # Tokenization
     words = word_tokenize(row)
     # POS
-    # tags = nltk.pos_tag(words)
-    return words
+    tags = nltk.pos_tag(words)
+    speech_tags = ['JJ', 'JJR', 'JJS', 'NN', 'VB', 'VBD', 'VBG', 'VBN', 'VBP']
+    neg = [words.index(i) for i in ['not', 'n\'t', 'nt'] if i in words]
+    tags2 = ''
+    if neg:
+        tags2 = tags[min(neg):]
+        words2 = words[min(neg):]
+        words = words[:min(neg)+1]
+
+    for index, word_tag in enumerate(tags2):
+        if word_tag[1] in speech_tags:
+            words = words+[replace_antonyms(word_tag[0])]+words2[index+2:]
+    sent = ' '.join(words)
+    return sent
 
 
 def replace_elongated_word(word):
@@ -39,19 +59,20 @@ def clean_data(df):
     # Replace links, @UserNames, blank spaces, emoji etc.
     df['tweet'] = df['tweet'].str.lower().replace('rt', '')
     df['tweet'] = df['tweet'].str.encode('ascii', 'ignore').str.decode('ascii')
-    # df['user'] = df['user'].str.lower().replace(r'[^0-9A-Za-z \t]', '', regex=True)
-    # df['tweet'] = df['tweet'].str.replace(r'[^A-Za-z \t]', '', regex=True)
+    df['tweet'] = df['tweet'].str.replace(r'[^A-Za-z \t]', '', regex=True)
     df['tweet'] = df['tweet'].str.replace(r'@\w+', '', regex=True)
     df['tweet'] = df['tweet'].str.replace(r'http\S+', '', regex=True)
     df['tweet'] = df['tweet'].str.replace(r'www\S+', '', regex=True)
     df['tweet'] = df['tweet'].replace(r'[0-9]+', '', regex=True)
     df['tweet'] = df['tweet'].replace(
-                  r'[!"$%&()*+,-./:;<=>?@[\]^_`{|}~]', '', regex=True)
+                  r'[!"$%&#\'()*+,-./:;<=>?@[\]^_`{|}~]', '', regex=True)
+
     # Replace elongated words by identifying those repeated characters and \
     # compare the new word with the english lexicon
     df['tweet'] = df['tweet'].apply(lambda x: detect_elongated_words(x))
-    # df['tweet'] = df['tweet'].apply(handle_negation)
-    # Stopwords
+    df['tweet'] = df['tweet'].apply(handle_negation)
+
+    # Stopwords - English & Hinglish
     stopword_list1 = stopwords.words('english')
     stopwords_df = pd.read_csv('stopwords.csv')
     stopword_list2 = stopwords_df['words'].values.tolist()

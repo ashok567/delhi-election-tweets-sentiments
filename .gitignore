@@ -8,7 +8,6 @@
 __pycache__/
 *.py[cod]
 
-
 # Ignore SQLite3 files.
 *.sqlite3
 *.sqlite3-journal
