@@ -42,7 +42,7 @@ def model1(X_train, y_train):
     layer1 = 512
     layer2 = 256
     epoch = 2
-    lr = 0.001
+    lr = 0.005
     epsilon = None
     validation = 0.1
     X_train_mod = tokenization_tweets(X_train, features)

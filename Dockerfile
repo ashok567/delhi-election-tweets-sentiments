@@ -1,9 +1,8 @@
 FROM python:3-onbuild
 
-COPY apps/two-eat.py /apps/
-COPY apps/config.py /apps/
+COPY apps/ /apps/
 COPY requirements.txt /tmp
 RUN pip3 install -r /tmp/requirements.txt
 
 WORKDIR /apps
-CMD ["python3", "two-eat.py"]
+CMD ["python3", "sentiment-analysis.py"]

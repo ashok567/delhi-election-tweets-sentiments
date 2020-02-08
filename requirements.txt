@@ -3,8 +3,10 @@ pandas
 matplotlib
 seaborn
 wordcloud
+Pillow
 tweepy
 textblob
 sklearn
+tensorflow
 keras
 nltk
