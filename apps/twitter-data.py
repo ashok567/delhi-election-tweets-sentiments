@@ -35,11 +35,12 @@ def get_sentiment(tweet):
 
 def save_data(api):
     search = 'Delhi -filter:retweets'
-    searched_tweet = tweepy.Cursor(api.search, q=search).items(1000)
+    searched_tweet = tweepy.Cursor(api.search, q=search).items(3000)
     tweets_data = [[tweet.user.name, tweet.text]
                    for tweet in searched_tweet]
     df = pd.DataFrame(tweets_data, columns=['user', 'tweet'])
     df.to_csv('tweet.csv', index=False)
+    # df = pd.read_csv('tweet.csv')
     processed_df = preprocess_data(df)
     processed_df['sentiment'] = processed_df['tweet'].apply(get_sentiment)
     processed_df = processed_df.drop_duplicates('tweet')

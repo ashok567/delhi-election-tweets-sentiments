@@ -1,5 +1,6 @@
 import re
 import nltk
+nltk.download("stopwords")
 from nltk.corpus import wordnet, stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
