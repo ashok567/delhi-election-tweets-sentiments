@@ -40,7 +40,7 @@ def save_data(api):
                    for tweet in searched_tweet]
     df = pd.DataFrame(tweets_data, columns=['user', 'tweet'])
     df.to_csv('tweet.csv', index=False)
-    # df = pd.read_csv('tweet.csv')
+    # df = pd.read_csv('tweet.csv', encoding='latin')
     processed_df = preprocess_data(df)
     processed_df['sentiment'] = processed_df['tweet'].apply(get_sentiment)
     processed_df = processed_df.drop_duplicates('tweet')

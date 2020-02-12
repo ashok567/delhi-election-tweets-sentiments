@@ -1,6 +1,5 @@
 import re
 import nltk
-nltk.download("stopwords")
 from nltk.corpus import wordnet, stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
@@ -86,6 +85,7 @@ def clean_data(df):
 
 
 def preprocess_data(df):
+    nltk.download("stopwords")
     df = df.dropna()
     df = clean_data(df)
     return df
