@@ -25,7 +25,7 @@ def train(X_train_mod, y_train, features, shuffle, drop, layer1, layer2, epoch, 
     optimizer = keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=epsilon, decay=0.0, amsgrad=False)
     model_nn.compile(loss='sparse_categorical_crossentropy',
                      optimizer=optimizer,
-                     metrics=['accuracy'])
+                     metrics=['accuracy'])                
     model_nn.fit(np.array(X_train_mod), y_train,
                  batch_size=32,
                  epochs=epoch,
@@ -36,7 +36,7 @@ def train(X_train_mod, y_train, features, shuffle, drop, layer1, layer2, epoch, 
 
 
 def model1(X_train, y_train):
-    features = 100
+    features = 3500
     shuffle = True
     drop = 0.5
     layer1 = 512
@@ -53,10 +53,14 @@ def model1(X_train, y_train):
 def main():
     df = pd.read_csv('data.csv')
     df = df.dropna()
+    df['sentiment'] = df['sentiment'].apply(lambda x: 2 if x == 'Positive' else (0 if x == 'Negative' else 1))
     X_train, X_test, y_train, y_test = train_test_split(
             df['tweet'], df['sentiment'], test_size=0.2, shuffle=True)
 
-    model1(X_train, y_train)
+    model = model1(X_train, y_train)
+    X_test_mod = tokenization_tweets(X_test, 100)
+    predict = model.predict(X_test_mod)
+    print(predict)
 
 
 if __name__ == "__main__":
