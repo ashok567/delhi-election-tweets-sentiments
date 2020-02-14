@@ -1,8 +1,6 @@
 import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
-import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
@@ -14,7 +12,7 @@ def tokenization_tweets(dataset, features):
     return dataset_transformed
 
 
-def train(X_train_mod, y_train, features, shuffle, drop, layer1, layer2, epoch, lr, epsilon, validation):
+def train(X_train_mod, y_train_mod, features, shuffle, drop, layer1, layer2, epoch, lr, epsilon, validation):
     model_nn = Sequential()
     model_nn.add(Dense(layer1, input_shape=(features,), activation='relu'))
     model_nn.add(Dropout(drop))
@@ -22,16 +20,10 @@ def train(X_train_mod, y_train, features, shuffle, drop, layer1, layer2, epoch, 
     model_nn.add(Dropout(drop))
     model_nn.add(Dense(3, activation='softmax'))
 
-    optimizer = keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=epsilon, decay=0.0, amsgrad=False)
     model_nn.compile(loss='sparse_categorical_crossentropy',
-                     optimizer=optimizer,
-                     metrics=['accuracy'])                
-    model_nn.fit(np.array(X_train_mod), y_train,
-                 batch_size=32,
-                 epochs=epoch,
-                 verbose=1,
-                 validation_split=validation,
-                 shuffle=shuffle)
+                     optimizer='adam',
+                     metrics=['accuracy'])
+    model_nn.fit(X_train_mod, y_train_mod, batch_size=32, epochs=epoch, verbose=1, validation_split=validation, shuffle=shuffle)
     return model_nn
 
 
@@ -41,12 +33,13 @@ def model1(X_train, y_train):
     drop = 0.5
     layer1 = 512
     layer2 = 256
-    epoch = 2
+    epoch = 5
     lr = 0.005
-    epsilon = None
+    epsilon = 1e-8
     validation = 0.1
     X_train_mod = tokenization_tweets(X_train, features)
-    model = train(X_train_mod, y_train, features, shuffle, drop, layer1, layer2, epoch, lr, epsilon, validation)
+    y_train_mod = y_train.values.reshape((-1, 1))
+    model = train(X_train_mod, y_train_mod, features, shuffle, drop, layer1, layer2, epoch, lr, epsilon, validation)
     return model
 
 
@@ -58,9 +51,8 @@ def main():
             df['tweet'], df['sentiment'], test_size=0.2, shuffle=True)
 
     model = model1(X_train, y_train)
-    X_test_mod = tokenization_tweets(X_test, 100)
-    predict = model.predict(X_test_mod)
-    print(predict)
+    # X_test_mod = tokenization_tweets(X_test, 3500)
+    # predict = model.predict(X_test_mod)
 
 
 if __name__ == "__main__":
