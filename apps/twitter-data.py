@@ -47,7 +47,7 @@ def save_data(api):
     processed_df.to_csv('data.csv', index=False)
 
 
-def main():
+def load_data():
     # Get twitter data
     api = create_api()
     save_data(api)
@@ -60,4 +60,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    load_data()

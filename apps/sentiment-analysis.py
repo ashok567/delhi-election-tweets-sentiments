@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
+from twitter-data import load_data
 
 
 def tokenization_tweets(dataset, features):
@@ -44,6 +45,7 @@ def model1(X_train, y_train):
 
 
 def main():
+    load_data()
     df = pd.read_csv('data.csv')
     df = df.dropna()
     df['sentiment'] = df['sentiment'].apply(lambda x: 2 if x == 'Positive' else (0 if x == 'Negative' else 1))
