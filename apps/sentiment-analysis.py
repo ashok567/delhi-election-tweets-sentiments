@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-from twitter-data import load_data
+from twitter_data import load_data
 
 
 def tokenization_tweets(dataset, features):
@@ -53,8 +53,8 @@ def main():
             df['tweet'], df['sentiment'], test_size=0.2, shuffle=True)
 
     model = model1(X_train, y_train)
-    # X_test_mod = tokenization_tweets(X_test, 3500)
-    # predict = model.predict(X_test_mod)
+    X_test_mod = tokenization_tweets(X_test, 3500)
+    predict = model.predict(X_test_mod)
 
 
 if __name__ == "__main__":
